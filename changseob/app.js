@@ -27,6 +27,23 @@ app.use(morgan("combined"));
 const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
+app.post("/users", async (req, res) => {
+  const { name, email, profile_image, password } = req.body;
+
+  myDataSource.query(
+    `
+    INSERT INTO users(
+      name,
+      email,
+      profile_image,
+      password
+    ) VALUES (?, ?, ?, ?);`,
+    [name, email, profile_image, password]
+  );
+
+  res.status(201).json({ message: "userCreated" });
+});
+
 app.listen(PORT, HOST, function () {
   console.log(`Server is listening on ${PORT}`);
 });
