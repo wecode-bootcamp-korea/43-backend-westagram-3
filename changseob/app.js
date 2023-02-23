@@ -37,9 +37,9 @@ const HOST = process.env.HOST;
 const PORT = process.env.PORT;
 
 app.post("/users", async (req, res) => {
-  const { name, email, profile_image, password } = req.body;
+  const { name, email, profileImage, password } = req.body;
 
-  myDataSource.query(
+  await appDataSource.query(
     `
     INSERT INTO users(
       name,
@@ -47,7 +47,7 @@ app.post("/users", async (req, res) => {
       profile_image,
       password
     ) VALUES (?, ?, ?, ?);`,
-    [name, email, profile_image, password]
+    [name, email, profileImage, password]
   );
 
   res.status(201).json({ message: "userCreated" });
