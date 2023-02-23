@@ -1,12 +1,12 @@
 -- migrate:up
-create table likes (
-  id int not null auto_increment,
-  user_id int not null,
-  post_id int not null,
-  created_at timestamp not null default current_timestamp,
-  primary key (id),
-  foreign key (user_id) references users (id),
-  foreign key (post_id) references posts (id)
+CREATE TABLE likes (
+  id INT NOT NULL AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  post_id INT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users (id),
+  FOREIGN KEY (post_id) REFERENCES posts (id)
 );
 
 

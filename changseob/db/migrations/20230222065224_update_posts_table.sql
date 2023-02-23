@@ -1,4 +1,4 @@
 -- migrate:up
-alter table posts add image_url varchar(2000) null;
-alter table posts modify image_url varchar(2000) null after content;
+ALTER TABLE posts ADD image_url VARCHAR(2000) NULL;
+ALTER TABLE posts MODIFY image_url VARCHAR(2000) NULL AFTER content;
 -- migrate:down

@@ -1,13 +1,13 @@
 -- migrate:up
-create table posts (
-  id int not null auto_increment,
-  title varchar(100) not null,
-  content varchar(3000) null,
-  user_id int not null,
-  created_at timestamp not null default current_timestamp,
-  updated_at timestamp null on update current_timestamp,
-  primary key (id),
-  foreign key (user_id) references users (id)
+CREATE TABLE posts (
+  id INT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(100) NOT NULL,
+  content VARCHAR(3000) NULL,
+  user_id INT NOT NULL,
+  created_at TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL ON update CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 -- migrate:down
