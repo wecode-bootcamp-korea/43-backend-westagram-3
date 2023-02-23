@@ -1,0 +1,11 @@
+-- migrate:up
+CREATE TABLE comments (
+  id int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  comment VARCHAR(3000) NOT NULL,
+  user_id int NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- migrate:down
+DROP TABLE comments;
