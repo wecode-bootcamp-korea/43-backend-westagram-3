@@ -38,7 +38,6 @@ const PORT = process.env.PORT;
 
 app.post("/users", async (req, res) => {
   const { name, email, profileImage, password } = req.body;
-
   await appDataSource.query(
     `
     INSERT INTO users(
@@ -58,7 +57,7 @@ app.post("/posts", async (req, res) => {
 
   await appDataSource.query(
     `
-    INSERT INTO posts (
+    INSERT INTO posts(
       title,
       content,
       image_url,
@@ -71,7 +70,7 @@ app.post("/posts", async (req, res) => {
 });
 
 app.get("/posts", async (req, res) => {
-  await appDataSource.query(
+  const posts = await appDataSource.query(
     `
     SELECT 
       users.id AS userId,
@@ -81,38 +80,35 @@ app.get("/posts", async (req, res) => {
       posts.content AS postingContent
     FROM posts
     INNER JOIN users ON posts.user_id = users.id
-  `,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+    `
   );
+
+  res.status(200).json({ data: posts });
 });
 
-// Needs to be updated
 app.get("/users/:userId", async (req, res) => {
   const { userId } = req.params;
 
-  await appDataSource.query(
+  const userPosts = await appDataSource.query(
     `
     SELECT
       users.id AS userId,
       users.profile_image AS userProfileImage,
       JSON_ARRAYAGG(
         JSON_OBJECT(
-          "postingId, posts.id,
+          "postingId", posts.id,
           "postingImageUrl", posts.image_url,
           "postingContent", posts.content
-          )
+        )
       ) as postings
     FROM users
     INNER JOIN posts ON posts.user_id = users.id
     WHERE users.id = ${userId}
     GROUP BY users.id
-    `,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+    `
   );
+
+  res.status(200).json({ data: userPosts });
 });
 
 app.put("/posts/:postId", async (req, res) => {
@@ -129,7 +125,7 @@ app.put("/posts/:postId", async (req, res) => {
     [content]
   );
 
-  await appDataSource.query(
+  const post = await appDataSource.query(
     `
     SELECT 
       users.id AS userId,
@@ -140,11 +136,10 @@ app.put("/posts/:postId", async (req, res) => {
     FROM posts
     INNER JOIN users ON posts.user_id = users.id
     WHERE posts.id = ${postId};
-  `,
-    (err, rows) => {
-      res.status(200).json({ data: rows });
-    }
+    `
   );
+
+  res.status(200).json({ data: post });
 });
 
 app.delete("/posts/:postId", async (req, res) => {
@@ -157,7 +152,7 @@ app.delete("/posts/:postId", async (req, res) => {
     `
   );
 
-  res.status(200).json({ message: "postingDeleted" });
+  res.status(204).json({ message: "postingDeleted" });
 });
 
 app.post("/likes", async (req, res) => {
