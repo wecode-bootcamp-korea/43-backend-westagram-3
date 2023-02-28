@@ -27,12 +27,35 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("combined"));
 
+//health check
 app.get("/ping", (req, res) => {
-  res.json({ message: "pong" });
+  res.status(200).json({ message: "pong" });
 });
 
 const server = http.createServer(app);
 const PORT = process.env.PORT;
+
+//create user
+app.post("/users/signup", async (req, res) => {
+  try{
+  const {name, email, profile_image, password} = req.body;
+
+  await database.query(
+    `INSERT INTO users(
+      name,
+      email,
+      profile_image,
+      password
+      ) VALUES(?,?,?,?);
+    `,
+    [name, email, profile_image, password]   
+  );
+  return res.status(201).json({message : "userCreated"})
+  }catch(err){
+    console.log("error")
+  }
+})
+
 
 const start = async () => {
   server.listen(PORT, () => console.log(`server is listening on ${PORT}`));
