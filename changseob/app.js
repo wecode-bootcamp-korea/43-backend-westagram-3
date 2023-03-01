@@ -1,4 +1,4 @@
-// Built-in package
+// built-in package
 const http = require("http");
 
 // 3rd-party package

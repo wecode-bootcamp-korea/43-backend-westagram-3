@@ -15,7 +15,7 @@ appDataSource
     console.log("Data Source has been initialized");
   })
   .catch((err) => {
-    console.error("Error occurred during Data Source  initialization", err);
+    console.error("Error occurred during Data Source initialization", err);
     appDataSource.destroy();
   });
 
