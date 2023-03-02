@@ -77,7 +77,7 @@ app.get("/search", async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
-app.get("users/:userId/posts", async (req, res) => {
+app.get("/users/:userId/posts", async (req, res) => {
   const { userId } = req.params;
 
   const result = await appDataSource.query(
@@ -155,32 +155,15 @@ app.delete("/posts/postId", async (req, res) => {
 app.post("/likes", async (req, res) => {
   const { userId, postId } = req.body;
 
-  const [isLiked] = await appDataSource.query(
-    `SELECT id
-    FROM likes
-    WHERE user_id = ?
-    AND post_id = ?`
+  await appDataSource.query(
+    `INSERT INTO likes (
+      user_id,
+      post_id
+    ) VALUES (?, ?)`,
+    [userId, postId]
   );
 
-  if (!isLiked) {
-    await appDataSource.query(
-      `INSERT INTO likes (
-        user_id, post_id
-      ) VALUES (?, ?)`,
-      [userId, postId]
-    );
-
-    return res.status(201).json({ message: "likeCreated" });
-  } else {
-    await appDataSource.query(
-      `DELETE FROM likes
-      WHERE user_id = ?
-      AND post_id = ?`,
-      [userId, postId]
-    );
-
-    return res.status(200).json({ message: "likeDeleted" });
-  }
+  return res.status(201).json({ message: "likeCreated" });
 });
 
 const server = http.createServer(app);
