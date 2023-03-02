@@ -5,11 +5,8 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const { DataSource } = require("typeorm");
-
 const app = express();
-
 const dotenv = require("dotenv");
-
 const appDataSource = new DataSource({
   type: process.env.DB_CONNECTION,
   host: process.env.DB_HOST,
@@ -18,7 +15,6 @@ const appDataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
 });
-
 appDataSource
   .initialize()
   .then(() => {
@@ -27,15 +23,12 @@ appDataSource
   .catch((error) => {
     console.error("Error during Data Source initialization", error);
   });
-
 app.use(express.json());
 app.use(cors());
 app.use(morgan("combined"));
-
 app.get("/ping", (req, res) => {
   res.status(200).json({ message: "pong" });
 });
-
 app.post("/users", async (req, res) => {
   const { name, email, profileImage, password } = req.body;
 
@@ -84,7 +77,7 @@ app.get("/search", async (req, res) => {
   return res.status(200).json({ data: result });
 });
 
-app.get("users/userId/posts", async (req, res) => {
+app.get("users/:userId/posts", async (req, res) => {
   const { userId } = req.params;
 
   const result = await appDataSource.query(
@@ -141,7 +134,7 @@ app.patch("/posts/postId", async (req, res) => {
     [postId]
   );
 
-  return res.status(201).json({ message: "postModify" });
+  return res.status(200).json({ message: "postModify", data: "result" });
 });
 //patch: 리소스의 부분적인 수정을 할 때에 사용
 
@@ -177,7 +170,7 @@ app.post("/likes", async (req, res) => {
       [userId, postId]
     );
 
-    return res.status(201).json({ message: "likeCreatedD" });
+    return res.status(201).json({ message: "likeCreated" });
   } else {
     await appDataSource.query(
       `DELETE FROM likes
@@ -186,7 +179,7 @@ app.post("/likes", async (req, res) => {
       [userId, postId]
     );
 
-    return res.status(201).json({ message: "likeDeleted" });
+    return res.status(200).json({ message: "likeDeleted" });
   }
 });
 
@@ -198,5 +191,4 @@ const start = async () => {
     console.log(`Server Listening to request on ${PORT}`);
   });
 };
-
 start();
