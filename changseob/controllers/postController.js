@@ -1,10 +1,22 @@
+// 3rd-party package
+const jwt = require("jsonwebtoken");
+
+// custom package
 const postService = require("../services/postService");
 
 const writePost = async (req, res) => {
   try {
-    const { title, content, imageUrl, userId } = req.body;
+    const accessToken = req.headers.authorization;
+    const { title, content, imageUrl } = req.body;
 
-    if (!title || !content || !imageUrl || !userId) {
+    const decoded = jwt.verify(accessToken, process.env.JWT_SECRET_KEY);
+    if (!decoded) {
+      return res.status(401).json({ message: "INVALID_ACCESS_TOKEN" });
+    }
+
+    const userId = decoded.id;
+
+    if (!title || !content || !imageUrl) {
       return res.status(400).json({ message: "KEY_ERROR" });
     }
 

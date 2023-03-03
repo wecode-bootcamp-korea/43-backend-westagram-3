@@ -21,9 +21,29 @@ const createUser = async (name, email, profileImage, password) => {
   }
 };
 
+const getUser = async (email) => {
+  try {
+    const [user] = await appDataSource.query(
+      `SELECT
+        id,
+        password
+      FROM users
+      WHERE email = ?
+    `,
+      [email]
+    );
+
+    return user;
+  } catch (err) {
+    const error = new Error("INVALID_DATA_INPUT");
+    error.statusCode = 500;
+    throw error;
+  }
+};
+
 const getUserPosts = async (userID) => {
   try {
-    return await appDataSource.query(
+    const [userPosts] = await appDataSource.query(
       `
       SELECT
       users.id AS userId,
@@ -42,6 +62,8 @@ const getUserPosts = async (userID) => {
     `,
       [userID]
     );
+
+    return userPosts;
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 500;
@@ -51,5 +73,6 @@ const getUserPosts = async (userID) => {
 
 module.exports = {
   createUser,
+  getUser,
   getUserPosts,
 };
