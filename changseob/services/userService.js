@@ -61,7 +61,6 @@ const signIn = async (email, password) => {
   }
 
   const user = await userDao.getUser(email);
-  console.log(`id: ${user.id}, password: ${user.password}`);
   const isValidPassword = await checkHash(password, user.password);
 
   if (!isValidPassword) {
@@ -78,7 +77,7 @@ const signIn = async (email, password) => {
 const getUserPosts = async (userId) => {
   const idValidation = new RegExp("^[0-9]+$");
 
-  if (!idValidation.test(password)) {
+  if (!idValidation.test(userId)) {
     const err = new Error("USER_ID_IS_NOT_VALID");
     err.statusCode = 409;
     throw err;

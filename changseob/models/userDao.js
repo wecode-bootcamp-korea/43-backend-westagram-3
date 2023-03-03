@@ -43,7 +43,7 @@ const getUser = async (email) => {
 
 const getUserPosts = async (userID) => {
   try {
-    return await appDataSource.query(
+    const [userPosts] = await appDataSource.query(
       `
       SELECT
       users.id AS userId,
@@ -62,6 +62,8 @@ const getUserPosts = async (userID) => {
     `,
       [userID]
     );
+
+    return userPosts;
   } catch (err) {
     const error = new Error("INVALID_DATA_INPUT");
     error.statusCode = 500;
